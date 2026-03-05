@@ -1,0 +1,1201 @@
+Code
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAINTIQ — Smart Maintenance</title>
+
+  <style>
+    :root{
+      --bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: rgba(2, 6, 23, 0.10);
+
+      --brand: #1d4ed8;
+      --brand-2: #0b2c7a;
+
+      --shadow: 0 20px 50px rgba(2,6,23,.10);
+      --shadow-soft: 0 14px 30px rgba(2,6,23,.08);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+
+      --max: 1120px;
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.45;
+    }
+    img{ max-width: 100%; display:block; }
+
+    .container{
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    /* ======================
+       HERO
+    ====================== */
+    .hero{
+      position: relative;
+      min-height: 520px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 0;
+      background: #0b1220;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(7, 32, 84, .78) 0%, rgba(9, 29, 68, .72) 60%, rgba(8, 23, 47, .70) 100%),
+        url("https://images.unsplash.com/photo-1758957701419-2c6e266f7988?auto=format&fit=crop&fm=jpg&q=80&w=2400");
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.04);
+      filter: saturate(1.05) contrast(1.05);
+    }
+
+    /* decorative soft blobs like in screenshot */
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:-120px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.10), transparent 35%),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,.10), transparent 35%),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,.08), transparent 40%),
+        radial-gradient(circle at 30% 75%, rgba(255,255,255,.07), transparent 40%);
+      pointer-events:none;
+    }
+
+    .hero-inner{
+      position: relative;
+      text-align: center;
+      padding: 70px 18px;
+      width: min(920px, 100%);
+    }
+
+    .pill{
+      display: inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .2px;
+      color: rgba(255,255,255,.88);
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .hero h1{
+      margin: 16px 0 10px;
+      font-size: clamp(42px, 6.2vw, 74px);
+      line-height: 1.03;
+      color: #fff;
+      letter-spacing: -0.8px;
+      font-weight: 800;
+      text-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+
+    .hero p{
+      margin: 0 auto 26px;
+      max-width: 760px;
+      color: rgba(255,255,255,.82);
+      font-size: 15px;
+    }
+
+    .hero-actions{
+      display:flex;
+      justify-content:center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn{
+      border: 0;
+      cursor:pointer;
+      font-weight: 700;
+      padding: 12px 18px;
+      border-radius: 999px;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 160px;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+      box-shadow: 0 10px 25px rgba(2,6,23,.20);
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .btn-dark{
+      background: rgba(2,6,23,.72);
+      color: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .btn-dark:hover{
+      background: rgba(2,6,23,.82);
+    }
+
+    .btn-light{
+      background: rgba(255,255,255,.92);
+      color: #1e3a8a;
+      border: 1px solid rgba(255,255,255,.35);
+    }
+    .btn-light:hover{
+      background: #ffffff;
+    }
+
+    /* ======================
+       SECTIONS
+    ====================== */
+    .section{
+      padding: 76px 0;
+    }
+
+    .kicker{
+      font-size: 12px;
+      letter-spacing: .12em;
+      color: #94a3b8;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin: 0 0 8px;
+    }
+
+    .h2{
+      margin: 0 0 14px;
+      font-size: clamp(34px, 4.2vw, 52px);
+      letter-spacing: -0.6px;
+      line-height: 1.05;
+      font-weight: 900;
+    }
+
+    .lead{
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 640px;
+    }
+
+    .two-col{
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 44px;
+      align-items: center;
+    }
+
+    .card-img{
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      background: #0b1220;
+    }
+    .card-img img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      aspect-ratio: 4 / 3;
+    }
+
+    .img-grid{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 42px;
+    }
+    .img-grid .card-img{
+      box-shadow: var(--shadow-soft);
+    }
+    .img-grid .card-img img{
+      aspect-ratio: 16 / 9;
+    }
+
+    /* subtle page divider spacing like screenshot */
+    .soft-divider{
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(2,6,23,.10), transparent);
+      margin: 0;
+      border: 0;
+    }
+
+    /* ======================
+       RESPONSIVE
+    ====================== */
+    @media (max-width: 900px){
+      .two-col{ grid-template-columns: 1fr; }
+      .img-grid{ grid-template-columns: 1fr; }
+      .section{ padding: 60px 0; }
+      .hero{ min-height: 520px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ======================
+       HERO (Top Banner)
+  ====================== -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="pill">Tech-Enabled Service Platform</div>
+
+      <h1>
+        Smart<br/>
+        Maintenance.<br/>
+        Simplified Living.
+      </h1>
+
+      <p>
+        Your one-stop solution for painting, plumbing, electrical, welding, aluminium fabrication,
+        cupboard work and all maintenance services across Kerala.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-dark" href="#book">Book a Service</a>
+        <a class="btn btn-light" href="#partner">Become a Partner</a>
+      </div>
+    </div>
+  </header>
+
+  <hr class="soft-divider"/>
+
+  <!-- ======================
+       ABOUT SECTION (Who We Are)
+  ====================== -->
+  <section class="section">
+    <div class="container">
+      <div class="two-col">
+        <div>
+          <p class="kicker">ABOUT MAINTIQ</p>
+          <h2 class="h2">Who We Are</h2>
+
+          <p class="lead" style="max-width: 720px;">
+            MAINTIQ is a smart service coordination platform that connects customers with verified
+            and skilled professionals. From small repairs to large fabrication projects, we handle
+            everything with safety, quality, and reliability.
+          </p>
+
+          <p class="lead" style="max-width: 720px;">
+            We are transforming the maintenance industry in Kerala by bringing technology,
+            transparency, and trust to every service interaction. Our mission is to make home and
+            office maintenance hassle-free and professional.
+          </p>
+        </div>
+
+        <div class="card-img" aria-label="About image">
+          <img
+            src="https://images.unsplash.com/photo-1667207591422-911389b25771?auto=format&fit=crop&fm=jpg&q=80&w=1400"
+            alt="Construction workers at a site"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <!-- ======================
+           IMAGE CARDS ROW (2 cards)
+      ====================== -->
+      <div class="img-grid">
+        <div class="card-img">
+          <img
+            src="https://images.unsplash.com/photo-1672748341520-6a839e6c05bb?auto=format&fit=crop&fm=jpg&q=80&w=1400"
+            alt="Smiling worker in hard hat"
+            loading="lazy"
+          />
+        </div>
+
+        <div class="card-img">
+          <img
+            src="https://images.unsplash.com/photo-1625685554446-9c0dc87d506a?auto=format&fit=crop&fm=jpg&q=80&w=1400"
+            alt="Abstract technology blue background"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="soft-divider"/>
+
+  <!-- ======================
+       WHAT WE OFFER (Heading only as in screenshot)
+  ====================== -->
+  <section class="section" style="padding-top: 70px;">
+    <div class="container">
+      <p class="kicker">WHAT WE OFFER</p>
+      <h2 class="h2" style="max-width: 680px;">
+        Complete Maintenance<br/>Solutions for Your Space
+      </h2>
+    </div>
+  </section>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MAINTIQ – Smart Maintenance Solutions</title>
+  <style>
+    /*
+      This file recreates several sections from the MAINTIQ
+      marketing site using modern, responsive CSS. It faithfully
+      reproduces the original copy and layout while substituting
+      new royalty free images from Unsplash. You can drop this
+      markup into your existing page or use it standalone to
+      showcase the services, workflows, testimonials and contact
+      details. All colours, spacing and typographic styles are
+      defined with CSS variables for easy tweaking.
+    */
+    :root {
+      --blue: #1d4ed8;
+      --dark-blue: #0b2c7a;
+      --green: #22c55e;
+      --light-blue: #f3f7fd;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: rgba(15, 23, 42, 0.1);
+      --radius: 18px;
+      --shadow: 0 8px 20px rgba(2, 6, 23, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--text);
+      line-height: 1.6;
+      background: #ffffff;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    .container {
+      width: min(1140px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    /* Section wrapper */
+    .section {
+      padding: 80px 0;
+    }
+    .section h2 {
+      margin: 0 0 8px;
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+    }
+    .section .subheading {
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .section .lead {
+      max-width: 640px;
+      margin-bottom: 28px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* Services grid */
+    .services-grid {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      margin-top: 40px;
+    }
+    .service-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .service-card .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--light-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue);
+      margin-bottom: 14px;
+      font-size: 22px;
+    }
+    .service-card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .service-card p {
+      margin: 0 0 14px;
+      font-size: 14px;
+      color: var(--muted);
+      flex-grow: 1;
+    }
+    .service-card a {
+      margin-top: auto;
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    /* Why choose */
+    .why-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px;
+      align-items: center;
+    }
+    .why-image {
+      flex: 1 1 380px;
+      min-width: 280px;
+    }
+    .why-image img {
+      width: 100%;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      object-fit: cover;
+      aspect-ratio: 4 / 3;
+    }
+    .why-content {
+      flex: 1 1 380px;
+      min-width: 280px;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+    .feature {
+      display: flex;
+      gap: 12px;
+    }
+    .feature .feat-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--light-blue);
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .feature h4 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .feature p {
+      margin: 4px 0 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* How it works */
+    .steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .step-card {
+      flex: 1 1 220px;
+      min-width: 200px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .step-card .step-number {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: var(--blue);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin: 0 auto 12px;
+      font-size: 18px;
+    }
+    .step-card h4 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .step-card p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* Testimonials */
+    .testimonials {
+      margin-top: 40px;
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .testimonial {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+    .testimonial .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: var(--light-blue);
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .testimonial h4 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .testimonial small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .testimonial p {
+      margin: 12px 0 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .testimonial .stars {
+      margin-top: 14px;
+      color: #fbbf24;
+      font-size: 14px;
+    }
+
+    /* Ready CTA */
+    .ready-section {
+      background: var(--blue);
+      color: #ffffff;
+      padding: 80px 0;
+      text-align: center;
+    }
+    .ready-section h3 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      font-weight: 800;
+    }
+    .ready-section p {
+      margin: 0 0 24px;
+      color: rgba(255,255,255,0.85);
+      font-size: 16px;
+    }
+    .ready-section .whatsapp-button {
+      display: inline-block;
+      padding: 14px 28px;
+      background: var(--green);
+      color: #ffffff;
+      font-weight: 700;
+      border-radius: 999px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+      font-size: 16px;
+    }
+    .ready-section .ready-contacts {
+      margin-top: 36px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .ready-section .contact-card {
+      width: 240px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .ready-section .contact-card h5 {
+      margin: 12px 0 4px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .ready-section .contact-card span {
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+    }
+    .ready-section .contact-card .btn-row {
+      margin-top: 14px;
+      display: flex;
+      width: 100%;
+      gap: 10px;
+    }
+    .ready-section .contact-card .btn {
+      flex: 1;
+      padding: 8px 0;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.15);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .ready-section .contact-card .btn.whatsapp {
+      background: var(--green);
+      border: none;
+    }
+
+    /* Join as service partner */
+    .join-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px;
+      align-items: center;
+      padding: 80px 0;
+    }
+    .join-section img {
+      flex: 1 1 360px;
+      max-width: 480px;
+      width: 100%;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      object-fit: cover;
+    }
+    .join-content {
+      flex: 1 1 360px;
+      min-width: 280px;
+    }
+    .join-content h2 {
+      margin: 0 0 12px;
+      font-size: 32px;
+      font-weight: 800;
+    }
+    .join-content p {
+      margin: 0 0 20px;
+      font-size: 15px;
+      color: var(--muted);
+    }
+    .benefits {
+      margin: 0 0 24px;
+      padding: 0;
+      list-style: none;
+    }
+    .benefits li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .benefits li::before {
+      content: '\2713'; /* check mark */
+      color: var(--blue);
+      font-weight: 700;
+    }
+    .join-btn {
+      display: inline-block;
+      padding: 12px 22px;
+      background: var(--blue);
+      color: #ffffff;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    /* Contact us section */
+    .contact-section {
+      padding: 80px 0;
+      text-align: center;
+    }
+    .contact-section h2 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      font-weight: 800;
+    }
+    .contact-section .tagline {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 40px;
+    }
+    .contact-section .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+    }
+    .contact-section .card {
+      width: 260px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .contact-section .card .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      background: var(--light-blue);
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .contact-section .card h5 {
+      margin: 0 0 4px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .contact-section .card span {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+    .contact-section .card .btn-row {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+    .contact-section .card .btn {
+      flex: 1;
+      padding: 10px 0;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      background: #ffffff;
+      border: 1px solid var(--blue);
+      color: var(--blue);
+    }
+    .contact-section .card .btn.whatsapp {
+      background: var(--green);
+      border: none;
+      color: #ffffff;
+    }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(45deg, #13c1ac, #0077b6);
+      color: #ffffff;
+      padding: 60px 0;
+    }
+    footer .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+    footer h4 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    footer ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 14px;
+    }
+    footer ul li a {
+      color: rgba(255,255,255,0.85);
+    }
+    footer ul li a:hover {
+      text-decoration: underline;
+    }
+    footer .branding {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    footer .bottom {
+      border-top: 1px solid rgba(255,255,255,0.3);
+      padding-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+    }
+    footer .social-icons {
+      display: flex;
+      gap: 14px;
+    }
+    footer .social-icons a {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      transition: background 0.2s;
+    }
+    footer .social-icons a:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    @media (max-width: 768px) {
+      .why-section,
+      .join-section {
+        flex-direction: column;
+      }
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Services Section -->
+  <section id="services" class="section">
+    <div class="container">
+      <div class="subheading">WHAT WE OFFER</div>
+      <h2>Complete Maintenance Solutions for Your Space</h2>
+      <div class="services-grid">
+        <!-- Row 1 -->
+        <div class="service-card">
+          <div class="icon">🎨</div>
+          <h3>Painting</h3>
+          <p>Professional interior and exterior painting services with premium quality materials and expert finishing.</p>
+          <a href="#">Learn More →</a>
+        </div>
+        <div class="service-card">
+          <div class="icon">🚰</div>
+          <h3>Plumbing</h3>
+          <p>Complete plumbing solutions including installation, repair, and maintenance for residential and commercial properties.</p>
+          <a href="#">Learn More →</a>
+        </div>
+        <div class="service-card">
+          <div class="icon">⚡</div>
+          <h3>Electrical Works</h3>
+          <p>Certified electricians for wiring, installations, repairs, and electrical safety inspections.</p>
+          <a href="#">Learn More →</a>
+        </div>
+        <div class="service-card">
+          <div class="icon">🛠️</div>
+          <h3>Welding</h3>
+          <p>Expert welding services for gates, grills, structural works, and custom metal fabrication.</p>
+          <a href="#">Learn More →</a>
+        </div>
+        <!-- Row 2 -->
+        <div class="service-card">
+          <div class="icon">🏠</div>
+          <h3>Aluminium Fabrication</h3>
+          <p>Custom aluminium windows, doors, partitions, and fabrication works with modern designs.</p>
+          <a href="#">Learn More →</a>
+        </div>
+        <div class="service-card">
+          <div class="icon">🗄️</div>
+          <h3>Cupboard &amp; Interior Works</h3>
+          <p>Modular kitchen, wardrobes, storage solutions, and complete interior carpentry services.</p>
+          <a href="#">Learn More →</a>
+        </div>
+        <div class="service-card">
+          <div class="icon">🔧</div>
+          <h3>General Maintenance</h3>
+          <p>Regular maintenance, minor repairs, and handyman services for homes and offices.</p>
+          <a href="#">Learn More →</a>
+        </div>
+        <div class="service-card">
+          <div class="icon">📐</div>
+          <h3>Custom Project Works</h3>
+          <p>Tailored solutions for unique projects, renovations, and specialized construction requirements.</p>
+          <a href="#">Learn More →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Section -->
+  <section class="section">
+    <div class="container why-section">
+      <div class="why-image">
+        <!-- Substitute image of two workers from Unsplash -->
+        <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80" alt="Workers on job site"/>
+      </div>
+      <div class="why-content">
+        <div class="subheading">WHY CHOOSE MAINTIQ</div>
+        <h2>Why Choose MAINTIQ</h2>
+        <p class="lead">Experience the difference with our professional approach</p>
+        <div class="features">
+          <div class="feature">
+            <div class="feat-icon">✓</div>
+            <div>
+              <h4>Verified Professionals</h4>
+              <p>All our service partners are thoroughly vetted and background checked.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feat-icon">✓</div>
+            <div>
+              <h4>Transparent Pricing</h4>
+              <p>Clear quotations with no hidden charges or surprise costs.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feat-icon">✓</div>
+            <div>
+              <h4>Free Site Visit &amp; Quotation</h4>
+              <p>Get accurate estimates with complimentary on site assessment.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feat-icon">✓</div>
+            <div>
+              <h4>On Time Completion</h4>
+              <p>We respect your time and ensure projects finish as scheduled.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feat-icon">✓</div>
+            <div>
+              <h4>Central Coordination</h4>
+              <p>Single point of contact for all your maintenance needs.</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="feat-icon">✓</div>
+            <div>
+              <h4>Emergency Support Available</h4>
+              <p>Quick response team ready for urgent maintenance requirements.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works Section -->
+  <section class="section">
+    <div class="container">
+      <h2>How MAINTIQ Works</h2>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h4>Share Your Requirement</h4>
+          <p>Tell us what service you need through WhatsApp or our platform.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h4>Provide Location &amp; Contact</h4>
+          <p>Share your location and preferred contact details.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h4>We Assign the Right Team</h4>
+          <p>Our system matches you with verified professionals.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h4>Work Completed Professionally</h4>
+          <p>Skilled team completes your project with quality assurance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="section">
+    <div class="container">
+      <div class="subheading">Customer Reviews</div>
+      <h2>What Our Clients Say</h2>
+      <div class="testimonials">
+        <div class="testimonial">
+          <div class="avatar">RK</div>
+          <h4>Rajesh Kumar</h4>
+          <small>Kochi</small>
+          <p>“MAINTIQ handled our complete home renovation project professionally. The painting and electrical work teams were skilled and completed everything on time. Highly recommended!”</p>
+          <div class="stars">★★★★★</div>
+        </div>
+        <div class="testimonial">
+          <div class="avatar">PM</div>
+          <h4>Priya Menon</h4>
+          <small>Thrissur</small>
+          <p>“Excellent service for our modular kitchen and cupboard installation. The team was punctual, professional, and the quality of work exceeded our expectations.”</p>
+          <div class="stars">★★★★★</div>
+        </div>
+        <div class="testimonial">
+          <div class="avatar">MA</div>
+          <h4>Mohammed Ashraf</h4>
+          <small>Kozhikode</small>
+          <p>“Called them for an emergency plumbing issue. They responded quickly and fixed the problem efficiently. Very reliable service with transparent pricing.”</p>
+          <div class="stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ready to Get Started Section -->
+  <section class="ready-section">
+    <div class="container">
+      <h3>Ready to Get Started?</h3>
+      <p>Send us your requirement directly on WhatsApp</p>
+      <a href="#" class="whatsapp-button">Send Enquiry on WhatsApp</a>
+      <div class="ready-contacts">
+        <div class="contact-card">
+          <div class="avatar">JJ</div>
+          <h5>Jeevan Joseph</h5>
+          <span>9061502156</span>
+          <div class="btn-row">
+            <button class="btn">Call</button>
+            <button class="btn whatsapp">WhatsApp</button>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="avatar">SR</div>
+          <h5>Sreeram</h5>
+          <span>9497377644</span>
+          <div class="btn-row">
+            <button class="btn">Call</button>
+            <button class="btn whatsapp">WhatsApp</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Join as a Service Partner Section -->
+  <section class="join-section">
+    <div class="container join-section">
+      <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80" alt="Service partners"/>
+      <div class="join-content">
+        <h2>Join as a Service Partner</h2>
+        <p>Are you a skilled technician, plumber, electrician, welder, or fabricator? Join MAINTIQ and grow your business with steady work opportunities and professional support.</p>
+        <ul class="benefits">
+          <li>Steady work opportunities</li>
+          <li>Fair payment terms</li>
+          <li>Professional growth</li>
+          <li>Central support system</li>
+        </ul>
+        <a href="#" class="join-btn">Register Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Us Section -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <div class="tagline">Service Area: All Over Kerala</div>
+      <div class="cards">
+        <div class="card">
+          <div class="avatar">JJ</div>
+          <h5>Jeevan Joseph</h5>
+          <span>9061502156</span>
+          <div class="btn-row">
+            <button class="btn">Call</button>
+            <button class="btn whatsapp">WhatsApp</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="avatar">SR</div>
+          <h5>Sreeram</h5>
+          <span>9497377644</span>
+          <div class="btn-row">
+            <button class="btn">Call</button>
+            <button class="btn whatsapp">WhatsApp</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="branding">MAINTIQ</div>
+          <p>Smart Maintenance. Simplified Living.</p>
+        </div>
+        <div>
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#services">All Services</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#">Partners</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Service Agreement</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="https://facebook.com">Facebook</a></li>
+            <li><a href="https://instagram.com">Instagram</a></li>
+            <li><a href="https://linkedin.com">LinkedIn</a></li>
+            <li><a href="https://whatsapp.com">WhatsApp</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="bottom">
+        <div>© 2025 MAINTIQ. All rights reserved.</div>
+        <div class="social-icons">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">📸</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="WhatsApp">🟢</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
